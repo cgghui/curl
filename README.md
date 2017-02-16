@@ -3,7 +3,7 @@
 
 ### curl静态属性
 以下属性仅适用于$curl->get()方法的第一个参数，如果curl线程为下载文件线程，curl::head 和 curl::body 是无效的
-- curl::head(#curl::head)  取出header部分的内容
+- [curl::head](#curl::head)  取出header部分的内容
 - curl::body(#curl::body)  取出body部分的内容
 - curl::info(#curl::info)  取出curl反馈的信息
 - curl::file(#curl::file)  取出下载的文件信息（仅对启用了下载的线程有效）
