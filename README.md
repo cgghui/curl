@@ -73,7 +73,7 @@ $curl->run();
 
 print_r($curl->get(curl::file));
 ```
-## curl::file
+## curl::isDown
 是否是一个下载线程
 ```php
 $curl = new curl();
@@ -89,3 +89,15 @@ $curl->add()->opt_targetURL('http://php.net')->done();
 $curl->run();
 var_dump($curl->get(curl::isDown)); // false
 ```
+## curl::error
+取出curl反馈的信息
+```php
+$curl = new curl();
+
+$curl->add()->opt_targetURL('http://php.net')->done();
+
+$curl->run();
+
+print_r($curl->get(curl::error));
+```
+
