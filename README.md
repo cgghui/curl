@@ -1,21 +1,8 @@
 # Curl PHP v1.1
 
 - [简介](#简介)
-- [Quick start](#quick-start)
-- [Creating new document](#creating-new-document)
-- [Search for elements](#search-for-elements)
-- [Verify if element exists](#verify-if-element-exists)
-- [Supported selectors](#supported-selectors)
-- [Output](#output)
-- [Creating a new element](#creating-a-new-element)
-- [Getting parent element](#getting-parent-element)
-- [Getting sibling elements](#getting-sibling-elements)
-- [Getting the child elements](#getting-the-child-elements)
-- [Getting document](#getting-document)
-- [Working with element attributes](#working-with-element-attributes)
-- [Comparing elements](#comparing-elements)
-- [Adding a child element](#adding-a-child-element)
-- [Replacing element](#replacing-element)
-- [Removing element](#removing-element)
-- [Working with cache](#working-with-cache)
-- [Comparison with other parsers](#comparison-with-other-parsers)
+
+##简介
+To install DiDOM run the command:
+
+    composer require imangazaliev/didom
