@@ -3,7 +3,7 @@
 
 ### curl静态属性
 
-- [curl::head](#curl::head)  取出header部分的内容
+- [curl::head](#curl::head)
 - curl::body(#curl::body)  取出body部分的内容
 - curl::info(#curl::info)  取出curl反馈的信息
 - curl::file(#curl::file)  取出下载的文件信息（仅对启用了下载的线程有效）
