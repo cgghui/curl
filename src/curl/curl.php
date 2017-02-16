@@ -1,5 +1,39 @@
 <?php
 
+$curl = new curl();
+
+$curl->add()->opt_targetURL('https://www.baidu.com', 2)->done('get','a');
+$curl->add()->opt_targetURL('http://image.baidu.com/')->done('get','b');
+$curl->add()->opt_targetURL('https://zhidao.baidu.com/',2)->done('get','c');
+
+$curl->run();
+
+$head = $curl->getManager('head');
+$body = $curl->getManager('body');
+$body = $curl->getManager('body');
+$body = $curl->getManager('body');
+
+if ($body->used('a') === true) {
+
+    $jquery = $body->jquery(); // https://github.com/Imangazaliev/DiDOM
+
+    echo $jquery->find('#lh > a:nth-child(1)')[0]->attr('href');
+    echo "\n";
+    echo $jquery->find('#lh > a:nth-child(2)')[0]->attr('href');
+    echo "\n";
+    echo $jquery->find('#lh > a:nth-child(3)')[0]->attr('href');
+    echo "\n";
+    echo $jquery->find('#lh > a:nth-child(4)')[0]->attr('href');
+    echo "\n\n";
+
+    $links = $jquery->find('a');
+    foreach ($links as $link) {
+        echo $link->attr('href');
+        echo "\n";
+    }
+
+}
+
 /**
  * 远程操作库
  */
@@ -60,6 +94,12 @@ class curl
     private $run = null;
 
     /**
+     * 单例实例对象 供 getManager 方法使用
+     * 调用 run 方法会将该属性清空
+     */
+    private $callIns = array();
+
+    /**
      * curl constructor.
      *
      * @param array $default 默认配置
@@ -91,6 +131,9 @@ class curl
      */
     public function run($name = null)
     {
+        $this->callIns = null;
+        $this->callIns = array();
+
         // 无配置线程
         if ($this->threadManager->isEmpty() === true) {
             return false;
@@ -181,6 +224,8 @@ class curl
     /**
      * 处理抓取结果的回调类
      *
+     * 该方法以单例模式返回回调类对象
+     *
      * $name为curl.php所在目录下的以curlManager_$name.php的类文件
      * 该类文件的类名必须命名为curlManager_$name，该类必须可被实例化
      *
@@ -190,6 +235,10 @@ class curl
      */
     public function getManager($name)
     {
+        if (isset($this->callIns[$name]) === true) {
+            return $this->callIns[$name];
+        }
+
         $name = 'curlManager_' . $name;
         $path = __DIR__ . DIRECTORY_SEPARATOR . $name . '.php';
 
@@ -197,7 +246,7 @@ class curl
             return false;
         }
         if (in_array($name, get_declared_classes()) === false) {
-            require(__DIR__ . DIRECTORY_SEPARATOR . $name . '.php');
+            require($path);
         }
         if (class_exists($name, false) === false) {
             return false;
@@ -205,10 +254,13 @@ class curl
 
         $ref = new ReflectionClass($name);
         if ($ref->IsInstantiable() === false) {
-            return false;
+            $ref = false;
+        } else {
+            $ref = $ref->newInstance($this);
         }
+        $this->callIns[str_replace('curlManager_', '', $name)] = $ref;
 
-        return $ref->newInstance($this);
+        return $ref;
     }
 
 }
