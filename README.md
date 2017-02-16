@@ -7,7 +7,7 @@
 - [curl::head](#curlhead)  取出header部分的内容
 - [curl::body](#curlbody)  取出body部分的内容
 - [curl::info](#curlinfo)  取出curl反馈的信息
-- [curl::file](#curlfile)  取出下载的文件信息（仅对启用了下载的线程有效）
+- [curl::file](#curlfile)  取出下载的文件信息 仅对启用了下载的线程有效
 - [curl::isDown](#curlisDown)  是否是一个下载线程
 - [curl::error](#curlerror)   取出curl的报错信息
 
@@ -57,16 +57,35 @@ $curl->add()->opt_targetURL('http://php.net')->done();
 
 $curl->run();
 
-echo $curl->get(curl::info);
+print_r($curl->get(curl::info));
 ```
 ## curl::file
-取出下载的文件信息（仅对启用了下载的线程有效）
+取出下载的文件信息 仅对启用了下载的线程有效 开启php_fileinfo扩展可返回文件的mime类型
 ```php
 $curl = new curl();
 
-$curl->add()->opt_targetURL('http://php.net')->done();
-
+$curl->add()
+  ->opt_targetURL('http://php.net')
+  ->opt_download('php.html')
+  ->done();
+  
 $curl->run();
 
-echo $curl->get(curl::file);
+print_r($curl->get(curl::file));
+```
+## curl::file
+是否是一个下载线程
+```php
+$curl = new curl();
+
+$curl->add()
+  ->opt_targetURL('http://php.net')
+  ->opt_download('php.html')
+  ->done();
+$curl->run();
+var_dump($curl->get(curl::isDown)); // true
+
+$curl->add()->opt_targetURL('http://php.net')->done();
+$curl->run();
+var_dump($curl->get(curl::isDown)); // false
 ```
