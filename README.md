@@ -3,12 +3,12 @@
 
 ### curl静态属性
 以下属性仅适用于$curl->get()方法的第一个参数，如果curl线程为下载文件线程，curl::head 和 curl::body 是无效的
-- curl::head  取出header部分的内容
-- curl::body  取出body部分的内容
-- curl::info  取出curl反馈的信息
-- curl::file  取出下载的文件信息（仅对启用了下载的线程有效）
-- curl::isDown  是否是一个下载线程
-- curl::error   取出curl的报错信息
+- curl::head(#curl::head)  取出header部分的内容
+- curl::body(#curl::body)  取出body部分的内容
+- curl::info(#curl::info)  取出curl反馈的信息
+- curl::file(#curl::file)  取出下载的文件信息（仅对启用了下载的线程有效）
+- curl::isDown(#curl::isDown)  是否是一个下载线程
+- curl::error(#curl::error)   取出curl的报错信息
 
 ### curl动态属性
 - $curl->threadNames  取出所有线程的名称
@@ -21,3 +21,16 @@
 - $curl->get($flag = self::body, $name = null) 取出执行结果
 - $curl->getAll() 取出所有执行结果
 - $curl->getManager($name) 处理抓取结果的回调类
+
+
+#curl::head
+取出目标站点响应的header标头
+```php
+$curl = new curl();
+
+$curl->add()->opt_targetURL('http://php.net')->done();
+
+$curl->run();
+
+echo $curl->get(curl::head);
+```
