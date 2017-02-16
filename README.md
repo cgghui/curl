@@ -16,12 +16,12 @@
 
 ### curl方法
 - [$curl->__construct($default = array())](#curl-__constructdefault--array)
-- $curl->add($copyName = false) 添加线程
-- $curl->run($name = null) 执行curl
-- $curl->runSmall($url, $method = 'get', $ssl = 1) 快速的执行curl
-- $curl->get($flag = self::body, $name = null) 取出执行结果
-- $curl->getAll() 取出所有执行结果
-- $curl->getManager($name) 处理抓取结果的回调类
+- [$curl->add($copyName = false)](#curl-__constructdefault--array) 添加线程
+- [$curl->run($name = null)](#curl-__constructdefault--array) 执行curl
+- [$curl->runSmall($url, $method = 'get', $ssl = 1)](#curl-__constructdefault--array) 快速的执行curl
+- [$curl->get($flag = self::body, $name = null)](#curl-__constructdefault--array) 取出执行结果
+- [[$curl->getAll()](#curl-__constructdefault--array) 取出所有执行结果
+- [$curl->getManager($name)](#curl-__constructdefault--array) 处理抓取结果的回调类
 
 
 ## curl::head
