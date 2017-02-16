@@ -12,7 +12,7 @@
 - [curl::error](#curlerror)   取出curl的报错信息
 
 ### curl动态属性
-- [$curl->threadNames](#curl-threadNames)  取出所有线程的名称
+- [$curl->threadNames](#curl-threadnames)  取出所有线程的名称
 
 ### curl方法
 - $curl->__construct($default = array())
