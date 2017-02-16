@@ -806,6 +806,7 @@ class curlRun
         $return = array(
             'path' => $threadOptions['download'][1],
             'size' => $info['download_content_length'],
+            'actualSize' => filesize($threadOptions['download'][1]),
             'mime' => $mime,
             'code' => $info['http_code']
         );
