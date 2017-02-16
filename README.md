@@ -14,5 +14,10 @@
 - $curl->threadNames  取出所有线程的名称
 
 ### curl方法
-- $curl->__construct([$default = array()])
-- $curl->add([$copyName = false]) 添加线程
+- $curl->__construct($default = array())
+- $curl->add($copyName = false) 添加线程
+- $curl->run($name = null) 执行curl
+- $curl->runSmall($url, $method = 'get', $ssl = 1) 快速的执行curl
+- $curl->get($flag = self::body, $name = null) 取出执行结果
+- $curl->getAll() 取出所有执行结果
+- $curl->getManager($name) 处理抓取结果的回调类
