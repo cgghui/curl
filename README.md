@@ -1,8 +1,6 @@
-# Curl PHP v1.1
+# Curl PHP v1.0
 
-- [简介](#简介)
-
-##简介
-To install DiDOM run the command:
-
-    composer require imangazaliev/didom
+# 包含curl类
+```php
+include('curl.php');
+```
