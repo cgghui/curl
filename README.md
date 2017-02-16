@@ -47,3 +47,15 @@ $curl->run();
 
 echo $curl->get(curl::body);
 ```
+
+## curl::info
+取出curl反馈的信息
+```php
+$curl = new curl();
+
+$curl->add()->opt_targetURL('http://php.net')->done();
+
+$curl->run();
+
+echo $curl->get(curl::info);
+```
