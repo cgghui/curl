@@ -1,5 +1,35 @@
 <?php
 
+$curl = new curl(array(
+    'header' => array(
+        'Upgrade-insecure-Requests' => '3'
+    )
+));
+
+
+
+$curl->add()
+    ->opt_targetURL('https://www.baidu.com', 2)
+    ->opt_sendHeader('Upgrade-insecure-Requests', '2')
+    ->done('get','a');
+
+$curl->run();
+
+$curl->threadDefault(array(
+    'header' => array(
+        'Upgrade-insecure-Requests' => '6'
+    )
+));
+
+$curl->add()
+    ->opt_targetURL('https://www.baidu.com', 2)
+    ->opt_sendHeader('Upgrade-insecure-Requests', '2')
+    ->done('get','a');
+
+$curl->run();
+
+$head = $curl->getManager('head');
+
 /**
  * 远程操作库
  */
@@ -74,7 +104,21 @@ class curl
     public function __construct($default = array())
     {
         $this->threadManager = new curlThreadManager();
-        $this->run = new curlRun($default);
+        $this->run = new curlRun($this->threadDefaultParse($default));
+    }
+
+    /**
+     * 更变默认配置
+     *
+     * @param array $default 配置信息
+     *
+     * @return bool
+     */
+    public function threadDefault($default)
+    {
+        $this->run->threadOptionDefault($this->threadDefaultParse($default));
+
+        return true;
     }
 
     /**
@@ -229,6 +273,28 @@ class curl
         return $ref;
     }
 
+    /**
+     * 解析默认配置 主要针对header部分的大小写转换
+     *
+     * @param $default
+     *
+     * @return array
+     */
+    private function threadDefaultParse($default)
+    {
+        if (isset($default['header']) === true) {
+            foreach ($default['header'] as $name=>$value) {
+                unset($default['header'][$name]);
+                $name = explode('-', $name);
+                foreach ($name as &$n) {
+                    $n = ucfirst(strtolower($n));
+                }
+                $default['header'][implode('-', $name)] = $value;
+            }
+        }
+
+        return $default;
+    }
 }
 
 /**
@@ -543,16 +609,20 @@ class curlThreadOptions
      */
     public function opt_sendHeader($name, $value)
     {
-        if (empty($name) === false)
-        {
-            $this->option['header'][ucfirst(strtolower($name))] = $value;
+        $name = explode('-', $name);
+        foreach ($name as &$n) {
+            $n = ucfirst(strtolower($n));
         }
+
+        $this->option['header'][implode('-', $name)] = $value;
 
         return $this;
     }
 
     /**
      * 发送请求Cookie
+     *
+     * 使用该方法发送Cookie，opt_sendHeader方法中的Cookie子段将被忽略
      *
      * @param string $field 名称
      * @param string $value 值
@@ -656,11 +726,21 @@ class curlRun
     /**
      * curlRun constructor.
      *
-     * @param array $threadOptionDefault 由 curl类实例化时提供
+     * @param array $default 默认线程配置 由curl类实例化时提供
      */
-    public function __construct($threadOptionDefault)
+    public function __construct($default)
     {
-        $this->threadOptionDefault = $threadOptionDefault;
+        $this->threadOptionDefault = $default;
+    }
+
+    /**
+     * 更变默认线程配置
+     *
+     * @param array $default 配置
+     */
+    public function threadOptionDefault($default)
+    {
+        $this->threadOptionDefault = array_merge($this->threadOptionDefault, $default);
     }
 
     /**
@@ -889,10 +969,21 @@ class curlStructure
      *
      * @var array
      */
-    private $threadOptionDefault = array(
-        'execMaxTime' => 15,
-        'connectMaxTime' => 15,
-        'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'
+    private $default = array(
+            'timeOut' => array(
+                'execMaxTime' => 15,
+                'connectMaxTime' => 15,
+            ),
+            'header' => array(
+                0 => '',
+                'Host' => '',
+                'Connection' => 'keep-alive',
+                'Cache-Control' => 'max-age=0',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Upgrade-Insecure-Requests' => '1',
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'
+            )
+
     );
 
     /**
@@ -906,13 +997,18 @@ class curlStructure
      * curlStructure constructor.
      *
      * @param array $threadOptions
-     * @param array $threadOptionDefault
+     * @param array $default
      */
-    public function __construct($threadOptions, $threadOptionDefault)
+    public function __construct($threadOptions, $default)
     {
         $this->requestMethod = strtoupper($threadOptions['requestMethod']);
+
         $this->threadOptions = $threadOptions;
-        $this->threadOptionDefault = array_merge($this->threadOptionDefault, $threadOptionDefault);
+
+        foreach ($default as $name=>$option) {
+            $this->default[$name] = array_merge($this->default[$name], $option);
+        }
+
         $this->curlHandle = curl_init();
     }
 
@@ -1001,10 +1097,7 @@ class curlStructure
     private function opt_timeOut()
     {
         if (isset($this->threadOptions['timeOut']) === false) {
-            $this->threadOptions['timeOut'] = array(
-                'execMaxTime' => $this->threadOptionDefault['execMaxTime'],
-                'connectMaxTime' => $this->threadOptionDefault['connectMaxTime']
-            );
+            $this->threadOptions['timeOut'] = $this->default['timeOut'];
         }
         $option = $this->threadOptions['timeOut'];
 
@@ -1016,17 +1109,12 @@ class curlStructure
 
     private function opt_sendHeader()
     {
-        $headers = array();
-        $headers['Host'] = $this->threadOptions['url']['host'];
-        $headers['Connection'] = 'keep-alive';
-        $headers['Cache-Control'] = 'max-age=0';
-        $headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8';
-        $headers['Upgrade-Insecure-Requests'] = '1';
-        $headers['User-Agent'] = $this->threadOptionDefault['User-Agent'];
+        $this->default['header'][0] = $this->requestMethod . ' ' . $this->threadOptions['url']['path'].' HTTP/1.1';
+        $this->default['header']['Host'] = $this->threadOptions['url']['host'];
         if (isset($this->threadOptions['header']) === true) {
-            $this->threadOptions['header'] = array_merge($headers, $this->threadOptions['header']);
+            $this->threadOptions['header'] = array_merge($this->default['header'], $this->threadOptions['header']);
         } else {
-            $this->threadOptions['header'] = $headers;
+            $this->threadOptions['header'] = $this->default['header'];
         }
 
         $cookie = '';
@@ -1038,12 +1126,11 @@ class curlStructure
                 $cookie .= $field . '=' . urlencode($value);
             }
         }
-        if ($cookie!=='') {
+        if ($cookie !== '') {
             $this->threadOptions['header']['Cookie'] = $cookie;
         }
 
         $headers = array();
-        $headers[] = $this->requestMethod . ' ' . $this->threadOptions['url']['path'].' HTTP/1.1';
         foreach ($this->threadOptions['header'] as $name=>$value) {
             $headers[] = $name . ': ' . $value;
         }
