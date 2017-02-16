@@ -15,7 +15,7 @@
 - [$curl->threadNames](#curl-threadnames)  取出所有线程的名称
 
 ### curl方法
-- [$curl->__construct($default = array())](#curl-__construct)
+- [$curl->__construct($default = array())](#curl-__constructdefault--array)
 - $curl->add($copyName = false) 添加线程
 - $curl->run($name = null) 执行curl
 - $curl->runSmall($url, $method = 'get', $ssl = 1) 快速的执行curl
@@ -130,8 +130,15 @@ print_r($curl->threadNames);
 ```
 
 ## $curl->__construct($default = array())
+$default 规定curl的一些缺省值，可以规定3个connectMaxTime（最大链接时间，单位秒），execMaxTime（等待响应时间，单位秒），User-Agent（浏览器报表） 
 ```php
-$curl = new curl();
+$default = array(
+  'connectMaxTime' => 30,
+  'execMaxTime' => 60,
+  'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+);
+
+$curl = new curl($default);
 
 ```
 
