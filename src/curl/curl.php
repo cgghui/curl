@@ -1,39 +1,5 @@
 <?php
 
-$curl = new curl();
-
-$curl->add()->opt_targetURL('https://www.baidu.com', 2)->done('get','a');
-$curl->add()->opt_targetURL('http://image.baidu.com/')->done('get','b');
-$curl->add()->opt_targetURL('https://zhidao.baidu.com/',2)->done('get','c');
-
-$curl->run();
-
-$head = $curl->getManager('head');
-$body = $curl->getManager('body');
-$body = $curl->getManager('body');
-$body = $curl->getManager('body');
-
-if ($body->used('a') === true) {
-
-    $jquery = $body->jquery(); // https://github.com/Imangazaliev/DiDOM
-
-    echo $jquery->find('#lh > a:nth-child(1)')[0]->attr('href');
-    echo "\n";
-    echo $jquery->find('#lh > a:nth-child(2)')[0]->attr('href');
-    echo "\n";
-    echo $jquery->find('#lh > a:nth-child(3)')[0]->attr('href');
-    echo "\n";
-    echo $jquery->find('#lh > a:nth-child(4)')[0]->attr('href');
-    echo "\n\n";
-
-    $links = $jquery->find('a');
-    foreach ($links as $link) {
-        echo $link->attr('href');
-        echo "\n";
-    }
-
-}
-
 /**
  * 远程操作库
  */
