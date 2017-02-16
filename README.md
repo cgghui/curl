@@ -130,7 +130,7 @@ print_r($curl->threadNames);
 ```
 
 ## $curl->__construct($default = array())
-$default 规定curl的一些缺省值，可以规定3个connectMaxTime（最大链接时间，单位秒），execMaxTime（等待响应时间，单位秒），User-Agent（浏览器报表） 
+$default 规定curl的一些缺省值，可以规定3个connectMaxTime（最大链接时间，单位秒），execMaxTime（等待响应时间，下载过大的文件时，该时间须要长一些，单位秒），User-Agent（浏览器报表） 
 ```php
 $default = array(
   'connectMaxTime' => 30,
