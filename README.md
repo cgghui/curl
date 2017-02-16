@@ -15,7 +15,7 @@
 - [$curl->threadNames](#curl-threadnames)  取出所有线程的名称
 
 ### curl方法
-- $curl->__construct($default = array())
+- [$curl->__construct($default = array())](#curl-__construct)
 - $curl->add($copyName = false) 添加线程
 - $curl->run($name = null) 执行curl
 - $curl->runSmall($url, $method = 'get', $ssl = 1) 快速的执行curl
@@ -127,6 +127,12 @@ run之后的结果 array(
 )
 */
 print_r($curl->threadNames);
+```
+
+## $curl->__construct($default = array())
+```php
+$curl = new curl();
+
 ```
 
 
