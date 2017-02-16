@@ -16,7 +16,7 @@
 
 ### curl方法
 - [$curl->__construct($default = array())](#curl-__constructdefault--array)
-- [$curl->add($copyName = false)](#curl-__constructdefault--array) 添加线程
+- [$curl->add($copyName = false)](#curl-addcopyname--false) 添加线程
 - [$curl->run($name = null)](#curl-__constructdefault--array) 执行curl
 - [$curl->runSmall($url, $method = 'get', $ssl = 1)](#curl-__constructdefault--array) 快速的执行curl
 - [$curl->get($flag = self::body, $name = null)](#curl-__constructdefault--array) 取出执行结果
@@ -149,9 +149,45 @@ echo $curl->get(curl::body);
 ```
 
 ## $curl->add($copyName = false)
+添加一个新的抓取线程
 
+- $copyName 复制线程 复制一个已有线程，提供已有线程的名称即可
+
+该方法返回的是配置线程对象（curlThreadOptions）,该对象可通过$curl->add()进行使用
+以下为配置线程对象中的可用外部方法
+
+- $curlThreadOptions->opt_targetURL($url, $ssl = 1) 设置目标站点的url
+- $curlThreadOptions->opt_isGetBody($is) 是否取回主体内容
+- $curlThreadOptions->opt_isGetHead($is) 是否取回标头内容
+- $curlThreadOptions->opt_download($savePath) 下载文件
+- $curlThreadOptions->opt_proxy($ip, $port = '80', $username = '', $password = '', $socks5 = false) 使用代理访问目标站点
+- $curlThreadOptions->opt_jump($max = 3) 自动跳转
+- $curlThreadOptions->opt_timeOut($execMaxTime = 30, $connectMaxTime = 0) 请求超时设置
+- $curlThreadOptions->opt_sendHeader($name, $value) 向目标站点发送的header数据
+- $curlThreadOptions->opt_sendCookie($field, $value) 向目标站点发送的cookie数据
 ```php
+$curl = new curl();
 
+$curl->add()
+  ->opt_targetURL('http://image5.tuku.cn/pic/dongwushijie/endearing_dog_181/098.jpg')
+  ->opt_download('098.jpg')
+  ->opt_timeOut(120, 10)
+  ->opt_proxy('127.0.0.1:8080')
+->done('get', 'a');
+
+/*
+ * 复制a线程给b线程
+ * b线程中更改了opt_targetURL和opt_download配置，其它将继承a线程的所有配置信息，
+ * 即b线程同a线程一样，最大链接时间为10秒，最大下载时间为120秒，且使用代理127.0.0.1:8080
+ */
+$curl->add('a')
+  ->opt_targetURL('http://image5.tuku.cn/pic/dongwushijie/endearing_dog_181/099.jpg')
+  ->opt_download('099.jpg')
+->done('get', 'b');
+
+$curl->run();
+
+print_r($curl->get(curl::file));
 ```
 
 ## $curl->run($name = null) 
