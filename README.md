@@ -2,7 +2,7 @@
 一个小巧方便快捷的 PHP CURL 库，可以用它进行网页内容的抓取，文件的下载，API接口的通信等操作，总之它是方便的，快捷的。除此之外，它还具备多线程能力。
 
 ### curl静态属性
-
+- [Installation](#installation)
 - [curl::head](#curl::head)
 - curl::body(#curl::body)  取出body部分的内容
 - curl::info(#curl::info)  取出curl反馈的信息
