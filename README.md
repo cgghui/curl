@@ -20,7 +20,7 @@
 - [$curl->run($name = null)](#curl-__constructdefault--array) 执行curl
 - [$curl->runSmall($url, $method = 'get', $ssl = 1)](#curl-__constructdefault--array) 快速的执行curl
 - [$curl->get($flag = self::body, $name = null)](#curl-__constructdefault--array) 取出执行结果
-- [[$curl->getAll()](#curl-__constructdefault--array) 取出所有执行结果
+- [$curl->getAll()](#curl-__constructdefault--array) 取出所有执行结果
 - [$curl->getManager($name)](#curl-__constructdefault--array) 处理抓取结果的回调类
 
 
@@ -148,4 +148,35 @@ echo $curl->get(curl::body);
 
 ```
 
+## $curl->add($copyName = false)
 
+```php
+
+```
+
+## $curl->run($name = null) 
+
+```php
+
+```
+
+## $curl->runSmall($url, $method = 'get', $ssl = 1) 
+
+```php
+
+```
+
+## $curl->get($flag = self::body, $name = null) 
+```php
+
+```
+
+## $curl->getAll() 
+```php
+
+```
+
+## $curl->getManager($name) 
+```php
+
+```
