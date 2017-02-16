@@ -59,3 +59,14 @@ $curl->run();
 
 echo $curl->get(curl::info);
 ```
+## curl::file
+取出下载的文件信息（仅对启用了下载的线程有效）
+```php
+$curl = new curl();
+
+$curl->add()->opt_targetURL('http://php.net')->done();
+
+$curl->run();
+
+echo $curl->get(curl::file);
+```
