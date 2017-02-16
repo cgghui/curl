@@ -13,3 +13,6 @@
 ### curl动态属性
 - $curl->threadNames  取出所有线程的名称
 
+### curl方法
+- $curl->__construct([$default = array()])
+- $curl->add([$copyName = false]) 添加线程
