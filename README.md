@@ -12,7 +12,7 @@
 - [curl::error](#curlerror)   取出curl的报错信息
 
 ### curl动态属性
-- [$curl->threadNames](#curlthreadNames)  取出所有线程的名称
+- [$curl->threadNames](#curl-threadNames)  取出所有线程的名称
 
 ### curl方法
 - $curl->__construct($default = array())
@@ -111,17 +111,22 @@ $curl->add()->opt_targetURL('https://www.baidu.com', 2)->done('get','b');
 $curl->add()->opt_targetURL('http://image.baidu.com/')->done('get','c');
 $curl->add()->opt_targetURL('https://zhidao.baidu.com/',2)->done('get','d');
 
+/*
+run之前的结果 array()
+*/
+print_r($curl->threadNames);
+
 $curl->run();
 
 /*
-array(
+run之后的结果 array(
   0 => a
   1 => b
   2 => c
   3 => d
 )
 */
-print_r($curl->get(curl::error));
+print_r($curl->threadNames);
 ```
 
 
