@@ -90,7 +90,7 @@ $curl->run();
 var_dump($curl->get(curl::isDown)); // false
 ```
 ## curl::error
-取出curl反馈的信息
+取出错误信息
 ```php
 $curl = new curl();
 
@@ -130,12 +130,16 @@ print_r($curl->threadNames);
 ```
 
 ## $curl->__construct($default = array())
-- $default 规定curl的一些缺省值，可以规定3个connectMaxTime（最大链接时间，单位秒），execMaxTime（等待响应时间，下载过大的文件时，该时间须要长一些，单位秒），User-Agent（浏览器报表） 
+- $default 规定curl的一些缺省值
 ```php
 $default = array(
-  'connectMaxTime' => 30,
-  'execMaxTime' => 60,
-  'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+  'timeOut' => array(
+    'connectMaxTime' => 30,
+    'execMaxTime' => 60
+  ),
+  'header' => array(
+    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+  )
 );
 
 $curl = new curl($default);
