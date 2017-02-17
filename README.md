@@ -153,7 +153,7 @@ echo $curl->get(curl::body);
 ```
 
 ## $curl->add($copyName = false)
-添加一个新的抓取线程
+添加一个抓取线程
 
 - $copyName 复制线程 复制一个已有线程，提供已有线程的名称即可
 
@@ -169,6 +169,9 @@ echo $curl->get(curl::body);
 - $curlThreadOptions->opt_timeOut($execMaxTime = 30, $connectMaxTime = 0) 请求超时设置
 - $curlThreadOptions->opt_sendHeader($name, $value) 向目标站点发送的header数据
 - $curlThreadOptions->opt_sendCookie($field, $value) 向目标站点发送的cookie数据
+- $curlThreadOptions->opt_sendPost($field, $value = null) 向目标站点发送的post数据
+- $curlThreadOptions->opt_sendPostCustom($data, $format = null) 向目标站点发送的自定义数据
+- $curlThreadOptions->done($requestMethod = 'get', $name = null) 完成配置
 ```php
 $curl = new curl();
 
@@ -194,9 +197,45 @@ $curl->run();
 print_r($curl->get(curl::file));
 ```
 
-## $curl->run($name = null) 
-
+## $curl->run($name = null)
+执行线程，如未指定$name(线程名称)，即执行所有线程，执行完毕后所有线程将被释放；如指定$name，即执行$name线程，执行完毕后$name线程会被释放，而没有被执行的线程不会被释放，如何释放，可通过$curl->free()进行释放。
 ```php
+$curl = new curl();
+
+$cookies = array(
+  'BIDUPSID' => '109CBB215F051223E78E0328F4586147',
+  'PSTM' => '1486296197',
+  '__cfduid' => 'd4b92399c102c843eee0176ecbbf5be8a1486296206',
+  'BAIDUID' => '109CBB215F051223E78E0328F4586147:SL=0:NR=50:FG=1',
+  'MCITY' => '-179%3A'
+);
+
+$thread = $curl->add()->opt_targetURL('https://www.baidu.com/', 2);
+foreach ($cookies as $name=>$value) {
+  $thread->opt_sendCookie($name, $value);
+}
+$thread->done('get', 'a');
+
+// 复制a线程给b线程
+$curl->add('a')
+  ->opt_targetURL('https://www.baidu.com/s?wd=php', 2)
+->done('get', 'b');
+
+// a线程执行完毕即被释放
+$curl->run('a');
+echo $curl->get(curl::body);
+
+// 复制失败 a线程已被释放 c线程不具有a线程的cookie
+$curl->add('a')
+  ->opt_targetURL('https://www.baidu.com/s?wd=php+curl', 2)
+->done('get', 'c');
+
+// 复制成功 b线程尚未被执行
+$curl->add('b')
+  ->opt_targetURL('https://www.baidu.com/s?wd=php+curl', 2)
+->done('get', 'e');
+
+
 
 ```
 
