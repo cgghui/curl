@@ -104,21 +104,18 @@ class curl
     public function __construct($default = array())
     {
         $this->threadManager = new curlThreadManager();
-        $this->run = new curlRun($this->threadDefaultParse($default));
-    }
 
-    /**
-     * 更变默认配置
-     *
-     * @param array $default 配置信息
-     *
-     * @return bool
-     */
-    public function threadDefault($default)
-    {
-        $this->run->threadOptionDefault($this->threadDefaultParse($default));
-
-        return true;
+        if (isset($default['header']) === true) {
+            foreach ($default['header'] as $name=>$value) {
+                unset($default['header'][$name]);
+                $name = explode('-', $name);
+                foreach ($name as &$n) {
+                    $n = ucfirst(strtolower($n));
+                }
+                $default['header'][implode('-', $name)] = $value;
+            }
+        }
+        $this->run = new curlRun($default);
     }
 
     /**
@@ -134,7 +131,26 @@ class curl
     }
 
     /**
+     * 释放线程
+     *
+     * $name 指定为 null 时，将释放所有线程
+     *
+     * @param null $name 指定配置线程的名称 以释放线程
+     *
+     * @return bool
+     */
+    public function free($name = null)
+    {
+        $this->threadManager->delete($name);
+
+        return true;
+    }
+
+    /**
      * 执行线程
+     *
+     * 多线程时，如果仅执行了$name线程，仅会对$name线程释放
+     * $name 指定为 null 时会释放所有线程
      *
      * @param null $name 指定配置线程的名称 执行指定的配置线程
      * @return bool
@@ -166,18 +182,18 @@ class curl
                 // 执行
                 $this->run->multiThread($threads);
             }
+            // 释放线程
+            $this->threadManager->delete();
         }
         // 指定线程
         else {
             if ($this->threadManager->has($name) === true) {
                 $this->run->singleThread($this->threadManager->get($name));
+                $this->threadManager->delete($name);
             } else {
                 $result = false;
             }
         }
-
-        // 删除所有线程
-        $this->threadManager->delete();
 
         return $result;
     }
@@ -273,28 +289,6 @@ class curl
         return $ref;
     }
 
-    /**
-     * 解析默认配置 主要针对header部分的大小写转换
-     *
-     * @param $default
-     *
-     * @return array
-     */
-    private function threadDefaultParse($default)
-    {
-        if (isset($default['header']) === true) {
-            foreach ($default['header'] as $name=>$value) {
-                unset($default['header'][$name]);
-                $name = explode('-', $name);
-                foreach ($name as &$n) {
-                    $n = ucfirst(strtolower($n));
-                }
-                $default['header'][implode('-', $name)] = $value;
-            }
-        }
-
-        return $default;
-    }
 }
 
 /**
@@ -477,7 +471,7 @@ class curlThreadOptions
             if (isset($info['query']) === true && empty($info['query']) === false) {
                 $info['fullPath'] = $info['path'] . '/?' . $info['query'];
             } else {
-                $info['fullPath'] = '/';
+                $info['fullPath'] = $info['path'];
             }
         } else {
             $info['fullPath'] = '/';
@@ -731,16 +725,6 @@ class curlRun
     public function __construct($default)
     {
         $this->threadOptionDefault = $default;
-    }
-
-    /**
-     * 更变默认线程配置
-     *
-     * @param array $default 配置
-     */
-    public function threadOptionDefault($default)
-    {
-        $this->threadOptionDefault = array_merge($this->threadOptionDefault, $default);
     }
 
     /**
