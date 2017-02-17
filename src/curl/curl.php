@@ -633,14 +633,16 @@ class curlThreadOptions
             switch ($format) {
                 case 'json':
                     $this->option['post'] = json_encode($data);
-                break;
+                    break;
                 case 'serialize':
                     $this->option['post'] = serialize($data);
-                break;
+                    break;
                 case 'httpQuery':
                     $this->option['post'] = http_build_query($data);
-                break;
+                    break;
             }
+        } else {
+            $this->option['post'] = $data;
         }
 
         return $this;
@@ -924,19 +926,19 @@ class curlStructure
      * @var array
      */
     private $default = array(
-            'timeOut' => array(
-                'execMaxTime' => 15,
-                'connectMaxTime' => 15,
-            ),
-            'header' => array(
-                0 => '',
-                'Host' => '',
-                'Connection' => 'keep-alive',
-                'Cache-Control' => 'max-age=0',
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'Upgrade-Insecure-Requests' => '1',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'
-            )
+        'timeOut' => array(
+            'execMaxTime' => 15,
+            'connectMaxTime' => 15,
+        ),
+        'header' => array(
+            0 => '',
+            'Host' => '',
+            'Connection' => 'keep-alive',
+            'Cache-Control' => 'max-age=0',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Upgrade-Insecure-Requests' => '1',
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'
+        )
 
     );
 
@@ -1099,13 +1101,13 @@ class curlStructure
         switch ($this->requestMethod) {
             case 'GET':
                 curl_setopt($this->curlHandle, CURLOPT_HTTPGET, true);
-            break;
+                break;
             case 'POST':
                 curl_setopt($this->curlHandle, CURLOPT_POST, true);
-            break;
+                break;
             default:
                 curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $this->requestMethod);
-            break;
+                break;
         }
 
         if($this->requestMethod !== 'GET' && isset($this->threadOptions['post']) === true) {
