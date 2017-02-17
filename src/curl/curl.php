@@ -1,35 +1,5 @@
 <?php
 
-$curl = new curl(array(
-    'header' => array(
-        'Upgrade-insecure-Requests' => '3'
-    )
-));
-
-
-
-$curl->add()
-    ->opt_targetURL('https://www.baidu.com', 2)
-    ->opt_sendHeader('Upgrade-insecure-Requests', '2')
-    ->done('get','a');
-
-$curl->run();
-
-$curl->threadDefault(array(
-    'header' => array(
-        'Upgrade-insecure-Requests' => '6'
-    )
-));
-
-$curl->add()
-    ->opt_targetURL('https://www.baidu.com', 2)
-    ->opt_sendHeader('Upgrade-insecure-Requests', '2')
-    ->done('get','a');
-
-$curl->run();
-
-$head = $curl->getManager('head');
-
 /**
  * 远程操作库
  */

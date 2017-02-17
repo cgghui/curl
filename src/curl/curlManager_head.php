@@ -97,25 +97,40 @@ class curlManager_head
 
     public function has($field)
     {
-        return isset($this->format[$field]);
+        $field = explode('-', $field);
+        foreach ($field as &$f) {
+            $f = ucfirst(strtolower($f));
+        }
+        return isset($this->format[implode('-', $field)]);
+    }
+
+    public function get($field)
+    {
+        $field = explode('-', $field);
+        foreach ($field as &$f) {
+            $f = ucfirst(strtolower($f));
+        }
+        return $this->format[implode('-', $field)];
     }
 
     public function status()
     {
-        return $this->has(0)===true ? explode(' ',$this->format[0], 3) : false;
+        return $this->has(0)===true ? explode(' ', $this->format[0], 3) : false;
     }
 
     public function contentType()
     {
-        return $this->has('Content-Type')===true ? $this->format['Content-Type'] : false;
+        return $this->has('Content-Type') === true ? $this->format['Content-Type'] : false;
     }
 
     public function cookieToArray()
     {
-        if( $this->has('Set-Cookie')===false ){
+        if($this->has('Set-Cookie') === false){
             return false;
         }
         date_default_timezone_set('Asia/Shanghai');
+
+        $this->format['Set-Cookie'] = (array)$this->format['Set-Cookie'];
 
         $cookie = array();
         foreach ($this->format['Set-Cookie'] as $i=>$item) {
@@ -142,7 +157,6 @@ class curlManager_head
 
     public function cookieToString()
     {
-
         if( $this->has('Set-Cookie')===false ){
             return '';
         }
